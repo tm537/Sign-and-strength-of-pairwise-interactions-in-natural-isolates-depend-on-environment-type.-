@@ -1,0 +1,99 @@
+## figure 3
+
+p2 <- ggplot(data=mean_int,aes(x=factor(locality),y=int_mean,colour = factor(locality))) +
+  geom_boxplot(outlier.alpha=0) +
+  geom_jitter(aes(size=sd_mean)) +
+  scale_colour_manual(values=c(different,general,local)) +
+  scale_size_continuous(range=c(1,3.5)) +
+  theme_bw() +
+  xlab('Locality') +
+  ylab('RII Index') +
+  labs(colour = "Locality")+
+  facet_wrap(~media,labeller = labeller(media = supp.labs)) +
+  theme(legend.position = 'none') +
+  theme(text = element_text(size=20)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+p2
+
+
+
+### model on RII index
+
+model2<- lmer(index~media*locality+(1|media:pair.ID)+(1|clone.ID),data = model_clone)
+summary(model2)
+DHARMa::simulateResiduals(model2,plot = T)
+
+model3 <- lmer(index~media+locality+(1|media:pair.ID)+(1|clone.ID),data = model_clone)
+anova(model2,model3) ## interaction not signif 
+
+r.squaredGLMM(model2) 
+r.squaredGLMM(model3) ## 37% variance explained by random variables 
+
+model4 <- lmer(index~media+(1|media:pair.ID)+(1|clone.ID),data = model_clone)
+anova(model3,model4) # locality not signif
+
+r.squaredGLMM(model4) ## 31% variance explained by random variables 
+summary(model4)
+
+model5<- lmer(index~1+(1|media:pair.ID)+(1|clone.ID),data = model_clone)
+anova(model4,model5) ## media v signif 
+
+null_model<- lmer(index~1+(1|media:pair.ID)+(1|clone.ID),data = model_clone)
+summary(null_model)
+r.squaredGLMM(null_model)
+
+null_model2<- lmer(index~1+(1|clone.ID),data = model_clone)
+summary(null_model2)
+r.squaredGLMM(null_model2)
+
+ctr<-emmeans(model4,'media')
+ctr
+pair_ctr<-pairs(ctr)
+pair_ctr
+
+plot1<- emmip(model4, ~media, type="response", CIs=TRUE)
+plot1
+
+levels(ctr)
+
+## Supplementary figure S2 
+
+c_plot<- plot +
+  scale_colour_manual(values=c(tsb,sb,m9)) +
+  scale_y_discrete(labels=c('TSB','Soil Wash','Minimal Media')) +
+  ylab('Media') +
+  theme_bw()
+
+c_plot
+
+
+#### code for plot showing random effect
+
+X <-model_clone%>%
+  mutate(fit.m = predict(model4, re.form = NA),
+         fit.c = predict(model4, re.form = NULL))
+
+p_marginal <- X %>% 
+  ggplot(aes(x = pair.ID, y= index)) +
+  geom_point(pch =16, col = 'grey') +
+  geom_line(aes(y=fit.m), col=1, size = 1) +
+  coord_cartesian(ylim = c(-1,1)) +
+  facet_wrap(vars(media))
+
+p_marginal
+
+pl<-model_clone %>%
+  count(clone.ID, media)
+
+
+##S1
+
+p_conditional<- X %>%
+  ggplot(aes(x = media, y = index)) +
+  geom_point(pch = 1) +
+  geom_line(aes(y = fit.c,colour = media), size = 2) +
+  facet_wrap(vars(pair.ID)) +
+  coord_cartesian(ylim = c(-1, 1)) +
+  scale_colour_manual(values=c(m9,tsb,sb), labels = c ('Minimal Media','TSB','Soil Wash')) +
+  theme_bw() 

@@ -1,0 +1,26 @@
+## figure 2
+
+p1<- ggplot(data = clone, aes(x = media, y = den_ch, fill = media)) +
+  sm_slope(group = factor(clone.ID),
+           labels = c("Minimal Media","TSB","Soil Wash"),
+           show_mean = TRUE,
+           show_err = F) +
+  #scale_fill_manual(values=c(m9,tsb,sb)) +
+  geom_hline(yintercept = 0) +
+  ylab("Density change (ln)") +
+  scale_fill_manual(values=c(m9,tsb,sb))
+
+p1
+
+
+## modelling how media affects desnity change 
+
+den_ch_lm <- lm(den_ch~media,data=clone)
+summary(den_ch_lm)
+simulateResiduals(den_ch_lm,plot=T)
+den_ch_lm1<- lm(den_ch~1,data=clone)
+anova(den_ch_lm,den_ch_lm1)
+
+p_ch<- emmeans(den_ch_lm,specs = 'media',adjust='tukey')
+pairs(p_ch)
+emmeans(den_ch_lm, ~media,adjust='tukey')
