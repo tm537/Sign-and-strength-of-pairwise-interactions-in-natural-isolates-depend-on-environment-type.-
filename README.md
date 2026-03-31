@@ -13,6 +13,8 @@ phylogenetic analysis = code for phylogenetic analysis, including quality checks
 
 Sanger_all_trimmed_reads.fa = file for above phylogenetic anaylsis
 
+chromatogram_zip = quality checks for all reads 
+
 
 final_data.csv = total dataset used in study. 
 
