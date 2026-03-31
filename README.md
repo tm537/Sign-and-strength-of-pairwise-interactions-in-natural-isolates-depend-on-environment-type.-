@@ -11,3 +11,6 @@ figures_n_stats = Split code into figures with associated statistical analysis c
 phylogenetic analysis = code for phylogenetic analysis, including quality checks, phylogenetic tree, taxonomy assignment, 
 
 
+final_data.csv = total dataset used in study. 
+
+rep_id = row identifier, clone.ID = number identifier of clone (1-36), innoculation = cfu innoculation, innoc_density = plating density, monoculture = cfu monoculture, monocutlure_density = plating density , coculture 1 -3 = cfu for reps 1-3 of coculture, coculture (!-3) density = plating density, media: A - minimal_media, B - TSB, C = soil wash, pair.ID = pair ID , locality = isolation of isolate site
