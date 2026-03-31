@@ -15,6 +15,8 @@ Sanger_all_trimmed_reads.fa = file for above phylogenetic anaylsis
 
 chromatogram_zip = quality checks for all reads 
 
+sanger_new.R = code for phylogenetic anaylsis using sanger_trimmed reads file above - raw files available for request
+
 
 final_data.csv = total dataset used in study. 
 
